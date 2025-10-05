@@ -7,9 +7,12 @@ import { Button } from "@/components/ui/button";
 import { parseFileToRows } from "@/lib/importers";
 import { rowsToProfilesWithMask } from "@/lib/exoplanet-pipeline";
 import { useProfilesStore } from "@/store/profiles";
+import { FaGithub } from "react-icons/fa";
+
 
 export default function Home() {
   const { profiles, setProfiles } = useProfilesStore();
+  
   const seed = profiles;
   const { current, rest, swipe, undo, setStack } = useSwipeDeck(seed);
   useEffect(() => setStack(profiles), [profiles, setStack]);
@@ -319,6 +322,17 @@ export default function Home() {
         onBoost={() => swipe("down")}
         onUndo={undo}
       />
+
+      <a
+        aria-label="next photo"
+        className="absolute bottom-0 right-0 z-120 justify-between gap-2 bg-black h-10 flex flex-row font-bold text-md items-center p-2 m-4 rounded-full shadow-lg text-white hover:bg-gray-600 transition"
+      href="https://github.com/whoAngeel/exoplanets-with-ai" target="_blank" rel="noopener noreferrer"
+      ><FaGithub size={30} /> Backend </a>
+      <a
+        aria-label="next photo"
+        className="absolute bottom-12 right-0 z-120 justify-between gap-2 bg-black h-10 flex flex-row font-bold text-md items-center p-2 m-4 rounded-full shadow-lg text-white hover:bg-gray-600 transition"
+        href="https://github.com/RonaldoAO/ExoTDL" target="_blank" rel="noopener noreferrer"
+      ><FaGithub size={30} /> Frontend </a>
     </section>
   );
 }
