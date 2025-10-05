@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { useProfilesStore } from "@/store/profiles";
 import { buildGeminiPrompt } from "@/lib/exoplanet-pipeline";
 import { generatePlanetImage } from "@/lib/gemini-client";
+import type { Profile } from "@/lib/types";
 
 export function useAutoGemini(
   enabled: boolean,
@@ -48,7 +49,7 @@ export function useAutoGemini(
           const img = await generatePlanetImage(prompt, { signal: abortRef.current.signal });
 
           // Pega la foto en el perfil correspondiente
-          setProfiles(prev => {
+          setProfiles((prev: Profile[]) => {
             const next = [...prev];
             const old = next[idx];
             if (!old) return prev;

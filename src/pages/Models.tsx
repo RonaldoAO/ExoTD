@@ -58,7 +58,7 @@ export default function Models() {
   const [option, setOption] = useState<string>("gradient_boosting");
   const [file, setFile] = useState<File | null>(null);
   const [result, setResult] = useState<any>(null);
-  const [dataSource, setDataSource] = useState<string>("kepler"); // opcional
+  const [dataSource] = useState<string>("kepler"); // opcional
   const ORCHESTRATOR_URL =
   "https://us-central1-cedar-catfish-473700-s6.cloudfunctions.net/exo-scout-orchestrator";
 

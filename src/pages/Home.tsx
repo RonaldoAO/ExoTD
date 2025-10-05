@@ -25,12 +25,9 @@ export default function Home() {
 
   const [modelNames, setModelNames] = useState<string[]>([]);
 
-  type Job = { model_name?: string | null };
-  const jobs: Job[] = []; // ← pon aquí tu array de jobs
 
   // === NUEVO: arreglo de 0/1 para la secuencia automática ===
   // 1 = derecha (match), 0 = izquierda
-  const DECISIONS = useRef<number[]>([1, 1, 1]); // cámbialo a tu gusto
 
   // Overlay MATCH
   const [showMatch, setShowMatch] = useState(false);
@@ -59,10 +56,10 @@ export default function Home() {
           throw new Error(`HTTP ${res.status} – ${raw.slice(0, 300)}`);
         }
 
-        let data: Object[] = JSON.parse(raw);
+        let data = JSON.parse(raw) as Array<{ status?: string; model_name?: string }>;
         console.log("Jobs recibidos:", data);
 
-        data = data.filter((j) => j?.status != "error");
+        data = data.filter((j) => j?.status !== "error");
 
         const names = Array.from(
           new Set(
@@ -196,7 +193,12 @@ export default function Home() {
       await withTimeout((async () => {
         const rows = await parseFileToRows(file);
         console.log("Filas leídas:", rows);
-        const built = rowsToProfilesWithMask(rows, X_MASK, { albedo: 0.3 });
+        const builtRaw = rowsToProfilesWithMask(rows, X_MASK, { albedo: 0.3 });
+        // Asegura que cada perfil tenga la propiedad 'canonical'
+        const built = builtRaw.map(p => ({
+          ...p,
+          canonical: p.canonical ?? "", // Asigna string vacío si falta
+        }));
         console.log("Perfiles construidos:", built);
         const withPhotos = assignPhotos(built, "./src/planetas", X_MASK);
         console.log("Perfiles generados:", withPhotos);

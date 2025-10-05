@@ -1,4 +1,5 @@
 export type Profile = {
+  canonical: any;
   id: string;
   name: string;
   age: number;

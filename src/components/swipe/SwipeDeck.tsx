@@ -1,4 +1,4 @@
-import { AnimatePresence } from "framer-motion";
+
 import SwipeCard from "./SwipeCard";
 import type { Profile } from "@/lib/types";
 

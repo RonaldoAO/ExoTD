@@ -5,10 +5,6 @@ import type { Profile } from "@/lib/types";
 
 const API_URL = "https://us-central1-cedar-catfish-473700-s6.cloudfunctions.net/get-exoplanets"; // TODO: reemplaza por tu endpoint real
 
-function normalizePhotoPath(p: string) {
-  // ./src/planetas/13.png  ->  /planetas/13.png
-  return p.replace(/^\.?\/?src\/planetas\//, "/planetas/");
-}
 
 export default function Matches() {
   const [items, setItems] = useState<Profile[] | null>(null);

@@ -321,7 +321,7 @@ export const applyMask = <T,>(items: T[], mask: number[]) =>
 export const rowsToProfilesWithMask = (
   rawRows: any[],
   mask: number[],
-  { albedo = 0.3, placeholderPhoto = "/assets/placeholder-planet.jpg" } = {}
+  { albedo = 0.3, } = {}
 ): Profile[] => {
   if (!rawRows?.length) return [];
 
