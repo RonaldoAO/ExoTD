@@ -1,21 +1,25 @@
-import { motion } from "framer-motion";
+import { motion, useAnimation } from "framer-motion";
 import type { PanInfo } from "framer-motion";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import type { Profile } from "@/lib/types";
 
+type AutoSwipe = { dir: "left" | "right" | "up" | "down"; trigger: number };
+
 type Props = {
   profile: Profile;
   onSwipe: (dir: "left" | "right" | "up" | "down") => void;
-  index: number; // para stacking
+  index: number; // stacking
+  autoSwipe?: AutoSwipe; // <-- NUEVO
 };
 
 const SWIPE_CONFIDENCE = 120; // px
 
-export default function SwipeCard({ profile, onSwipe, index }: Props) {
+export default function SwipeCard({ profile, onSwipe, index, autoSwipe }: Props) {
   const [imgIdx, setImgIdx] = useState(0);
   const draggingRef = useRef(false);
+  const controls = useAnimation(); // <-- NUEVO
 
   const handleDragEnd = (_: any, info: PanInfo) => {
     draggingRef.current = false;
@@ -29,6 +33,30 @@ export default function SwipeCard({ profile, onSwipe, index }: Props) {
   };
 
   const handleDragStart = () => (draggingRef.current = true);
+
+  // === Auto-swipe programado ===
+  useEffect(() => {
+    if (!autoSwipe) return;
+
+    const OFF = window.innerWidth * 0.9; // distancia de salida
+    const cfg: Record<NonNullable<AutoSwipe["dir"]>, any> = {
+      right: { x: OFF, y: 40, rotate: 8 },
+      left:  { x: -OFF, y: 40, rotate: -8 },
+      up:    { x: 0, y: -OFF, rotate: 0 },
+      down:  { x: 0, y: OFF, rotate: 0 },
+    };
+
+    const { dir } = autoSwipe;
+    controls
+      .start({
+        ...cfg[dir],
+        opacity: 0,
+        transition: { duration: 1, ease: "easeIn" },
+      })
+      .then(() => onSwipe(dir)); // avanza el deck como si fuera swipe real
+  // Dispara cuando cambie el trigger
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoSwipe?.trigger]);
 
   return (
     <motion.div
@@ -48,20 +76,17 @@ export default function SwipeCard({ profile, onSwipe, index }: Props) {
         dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
         dragElastic={0.8}
         whileDrag={{ cursor: "grabbing", rotate: 2 }}
+        animate={controls} // <-- NUEVO: permite control programático
       >
         <Card className="relative h-[72dvh] w-full overflow-hidden rounded-3xl sm:h-[70vh]">
-          {/* Foto principal */}
           <img
             src={profile.photos[imgIdx]}
             alt={profile.name}
-            className="h-full w-full object-cover"
+            className="!h-[140%] w-full object-cover "
           />
-
-          {/* Gradiente y texto */}
-          <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent p-4 text-white bg-red">
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent p-4 text-white">
             <div className="flex items-end justify-between">
               <div>
-                <h1>HOLA MUNDO</h1>
                 <h3 className="text-2xl font-semibold">
                   {profile.name}, {profile.age}
                 </h3>
@@ -86,17 +111,13 @@ export default function SwipeCard({ profile, onSwipe, index }: Props) {
             <p className="mt-2 line-clamp-2 text-sm opacity-95">{profile.bio}</p>
             <div className="mt-2 flex flex-wrap gap-2">
               {(profile.tags ?? []).map((t) => (
-                <span
-                  key={t}
-                  className="rounded-full bg-white/15 px-2 py-0.5 text-xs"
-                >
+                <span key={t} className="rounded-full bg-white/15 px-2 py-0.5 text-xs">
                   {t}
                 </span>
               ))}
             </div>
           </div>
 
-          {/* Tap para cambiar foto (izq/der) */}
           {profile.photos.length > 1 && (
             <>
               <button
