@@ -4,8 +4,6 @@ import { PROFILES } from "@/lib/data";
 import type { Profile } from "@/lib/types";
 
 const API_URL = "https://us-central1-cedar-catfish-473700-s6.cloudfunctions.net/get-exoplanets"; // TODO: reemplaza por tu endpoint real
-
-
 export default function Matches() {
   const [items, setItems] = useState<Profile[] | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -36,15 +34,13 @@ export default function Matches() {
 
         console.log("Datos recibidos:", data);
 
-        data = data.map((p) => {if (p.name != "NO ES UN EXOPLANETA") { return p; } });
-
-
-
         // Filtrar SOLO los que NO tengan label_raw = "NO ES UNA EXOPLANETA"
         const filtered = (Array.isArray(data) ? data : [])
+          .filter((p) => p && p.name && p.name !== "NO ES UN EXOPLANETA")
           // Normalizar fotos y tipar a Profile
           .map((p) => ({
             ...p,
+            bio: p.bio || "Exoplanet",
             photos: Array.isArray(p?.photos)
               ? p.photos.map((ph: string) => String(ph))
               : [],
