@@ -203,7 +203,7 @@ export default function Home() {
           canonical: p.canonical ?? "", // Asigna string vacío si falta
         }));
         console.log("Perfiles construidos:", built);
-        const withPhotos = assignPhotos(built, "./src/planetas", X_MASK);
+        const withPhotos = assignPhotos(built, "/planetas", X_MASK);
         console.log("Perfiles generados:", withPhotos);
 
         // Guardar en el firestore
@@ -239,7 +239,7 @@ export default function Home() {
         {/* Overlay MATCH global */}
         {showMatch && (
           <div className="pointer-events-none absolute inset-0 z-[200] flex items-center justify-center">
-            <span className="select-none rounded-2xl bg-green-600/80 px-6 py-3 text-3xl font-extrabold text-white shadow-2xl">
+            <span className="select-none rounded-2xl bg-primary/80 px-6 py-3 text-3xl font-extrabold text-white shadow-2xl">
               MATCH
             </span>
           </div>
@@ -258,7 +258,7 @@ export default function Home() {
                 </p>
 
                 {errorMsg && (
-                  <p className="mb-3 text-center text-sm text-red-500">{errorMsg}</p>
+                  <p className="mb-3 text-center text-sm text-destructive">{errorMsg}</p>
                 )}
 
                 <div className="grid gap-3">
@@ -277,7 +277,7 @@ export default function Home() {
                     <select
                       value={option}
                       onChange={(e) => setOption(e.target.value)}
-                      className="border rounded px-2 py-1"
+                      className="border rounded px-2 py-1 bg-background text-foreground dark:bg-input/30 dark:border-input"
                       disabled={loading || modelNames.length === 0}
                     >
                       <option value="" disabled>

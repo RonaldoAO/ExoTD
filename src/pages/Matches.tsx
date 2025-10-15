@@ -72,7 +72,7 @@ export default function Matches() {
   if (error) {
     return (
       <div className="space-y-3">
-        <p className="text-sm text-red-500">Error: {error}</p>
+        <p className="text-sm text-destructive">Error: {error}</p>
         <div className="grid gap-3 sm:grid-cols-2">
           {(items ?? PROFILES).map((p) => (
             <MatchItem key={p.id} p={p} />
@@ -84,8 +84,8 @@ export default function Matches() {
 
   return (
     <div className="grid gap-3 sm:grid-cols-2">
-      {(items ?? PROFILES).map((p) => (
-        <MatchItem key={p.id} p={p} />
+      {(items ?? PROFILES).map((p, i) => (
+        <MatchItem key={p.id} p={p} tone={i} />
       ))}
     </div>
   );

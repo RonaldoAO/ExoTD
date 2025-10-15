@@ -2,16 +2,9 @@ import { useEffect, useState } from "react";
 import type { FormEvent } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { ChevronRight } from "lucide-react";
+import { FaSatellite } from "react-icons/fa6";
 
 import {
   Dialog,
@@ -210,6 +203,7 @@ export default function Models() {
   };
 
   const [name, setName] = useState<string>("");
+  const SHOW_ACTIONS = false;
 
   return (
     <div className="mx-auto">
@@ -226,12 +220,13 @@ export default function Models() {
               </div>
             )}
             {!loading && error && (
-              <span className="text-sm text-red-500" title={error}>
+              <span className="text-sm text-destructive" title={error}>
                 Error al cargar
               </span>
             )}
           </div>
 
+          {/* REPLACED TABLE WITH CARDS
           <Table >
             <TableCaption className="text-left">
               {!loading && !error && rows.length === 0 ? "No hay modelos aún." : " "}
@@ -275,13 +270,66 @@ export default function Models() {
 
               {!loading && error && (
                 <TableRow>
-                  <TableCell colSpan={6} className="text-center text-red-500">
+                  <TableCell colSpan={6} className="text-center text-destructive">
                     {error}
                   </TableCell>
                 </TableRow>
               )}
             </TableBody>
           </Table>
+          */}
+          {loading ? (
+            <div className="space-y-3">
+              {Array.from({ length: 3 }).map((_, i) => (
+                <div key={`skeleton-${i}`} className="h-20 w-full animate-pulse rounded-xl bg-muted" />
+              ))}
+            </div>
+          ) : rows.length === 0 ? (
+            <p className="text-sm text-muted-foreground">No hay modelos aún.</p>
+          ) : (
+            <div className="space-y-3">
+              {rows.map((row, i) => (
+                <div
+                  key={row.id}
+                  className={`rounded-xl p-4 border border-white/5 bg-gradient-to-br ${[
+                    "from-primary/15",
+                    "from-secondary/15",
+                    "from-accent/15",
+                    "from-chart-4/15",
+                  ][i % 4]} via-background to-background`}
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="h-12 w-12 rounded-full bg-primary/20 flex items-center justify-center">
+                      <FaSatellite className="h-6 w-6 text-primary" />
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center justify-between gap-3">
+                        <h3 className="text-base font-semibold leading-tight">{row.nombre}</h3>
+                        <ChevronRight className="h-5 w-5 text-muted-foreground" />
+                      </div>
+                      <div className="mt-1 flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
+                        <span className="px-2 py-0.5 rounded bg-input/30 text-foreground/80">Algoritmo: {row.algoritmo}</span>
+                        <span>{row.fecha}</span>
+                        <span className="ml-auto font-medium text-primary">Accuracy: {row.exactitud}%</span>
+                      </div>
+                      <div className="mt-3 flex items-center justify-between">
+                        <div className="flex items-center gap-2 text-xs sm:text-sm">
+                          <span className="text-muted-foreground">Estatus:</span>
+                          {renderStatus(row.estatus)}
+                        </div>
+                        {SHOW_ACTIONS && (
+                          <div className="flex items-center gap-2">
+                            <Button size="sm" onClick={() => onCargar(row)}>Cargar</Button>
+                            <Button size="sm" variant="secondary" onClick={() => onActualizar(row)}>Actualizar</Button>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
           <DialogTrigger><Button className="mt-4 w-full">Ingresar nueva información</Button></DialogTrigger>
 
         </Card>
@@ -296,7 +344,12 @@ export default function Models() {
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="flex flex-col gap-2">
                   <label className="text-sm font-medium">Archivo CSV</label>
-                  <input type="file" accept=".csv" onChange={onFileChange} />
+                  <input
+                    type="file"
+                    accept=".csv"
+                    onChange={onFileChange}
+                    className="mt-1 block w-full rounded-md border bg-background px-3 py-2 text-sm file:mr-3 file:rounded-md file:border-0 file:bg-primary file:px-3 file:py-2 file:text-primary-foreground disabled:opacity-60 dark:border-input dark:bg-input/30"
+                  />
                 </div>
 
                 <div className="flex flex-col gap-2">
@@ -304,7 +357,7 @@ export default function Models() {
                   <select
                     value={option}
                     onChange={(e) => setOption(e.target.value)}
-                    className="border rounded px-2 py-1"
+                    className="border rounded px-2 py-1 bg-background text-foreground dark:bg-input/30 dark:border-input"
                   >
                     <option value="gradient_boosting">Gradient Boosting</option>
                     <option value="xgboost">XGBoost</option>
@@ -314,7 +367,12 @@ export default function Models() {
 
                 <div className="flex flex-col gap-2">
                   <label className="text-sm font-medium">Nombre</label>
-                  <input type="text" value={name} onChange={(e) => setName(e.target.value)} className="border rounded px-2 py-1" />
+                  <input
+                    type="text"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className="border rounded px-2 py-1 bg-background text-foreground dark:bg-input/30 dark:border-input"
+                  />
                 </div>
 
 
@@ -326,7 +384,7 @@ export default function Models() {
                   {loading ? "Enviando…" : "Entrenar modelo"}
                 </button>
 
-                {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
+                {error && <p className="text-destructive text-sm mt-2">{error}</p>}
                 {result && (
                   <pre className="mt-3 whitespace-pre-wrap break-words text-xs border rounded p-2 bg-muted">
                     "Información subida correctamente."

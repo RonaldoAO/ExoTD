@@ -1,6 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
-import { Flame, MessagesSquare, Heart, User } from "lucide-react";
+import { Flame, MessagesSquare, Heart, User, Earth } from "lucide-react";
+import { RiGeminiFill } from "react-icons/ri";
 
 export default function TopNav() {
   const { pathname } = useLocation();
@@ -27,9 +28,11 @@ export default function TopNav() {
         </nav>
         {/* Atajos móviles */}
         <div className="flex items-center gap-3 sm:hidden">
-          <Link to="/matches"><Heart className="h-5 w-5" /></Link>
+          <Link to="/matches"><Earth className="h-5 w-5" /></Link>
+          {/* Changed "Profile" to "Models" 
           <Link to="/chat"><MessagesSquare className="h-5 w-5" /></Link>
-          <Link to="/profile"><User className="h-5 w-5" /></Link>
+          */}
+          <Link to="/models"><RiGeminiFill  className="h-5 w-5" /></Link>
         </div>
       </div>
     </header>

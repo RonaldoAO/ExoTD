@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/dialog";
 import { Volume2, Loader2, Pause } from "lucide-react";
 
-export default function MatchItem({ p }: { p: Profile }) {
+export default function MatchItem({ p, tone = 0 }: { p: Profile; tone?: number }) {
   const src = p.photos[0];
   const [open, setOpen] = useState(false);
   const [explanation, setExplanation] = useState<string>("");
@@ -68,10 +68,19 @@ export default function MatchItem({ p }: { p: Profile }) {
     }
   };
 
+  const gradientFrom = (
+    [
+      "from-primary/20",
+      "from-secondary/20",
+      "from-accent/20",
+      "from-chart-4/20",
+    ][tone % 4]
+  );
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <div className="rounded-xl border p-3 cursor-pointer hover:bg-accent/50 transition-colors">
+        <div className={`rounded-xl p-3 cursor-pointer transition-colors border border-white/5 bg-gradient-to-br ${gradientFrom} via-background to-background hover:shadow-lg hover:shadow-primary/10`}>
           <div className="flex items-center gap-3 mb-3">
             <img src={src} alt={p.name} className="h-12 w-12 rounded-full object-cover" />
             <div className="flex-1">
@@ -158,22 +167,22 @@ export default function MatchItem({ p }: { p: Profile }) {
                   {/* Statistics Grid */}
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <div className="bg-gradient-to-br from-blue-500/10 to-blue-600/10 rounded-lg p-4 border border-blue-500/20">
-                      <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">{p.age}</div>
+                      <div className="text-2xl font-bold text-accent">{p.age}</div>
                       <div className="text-xs text-muted-foreground mt-1">Billion Years Old</div>
                     </div>
 
                     <div className="bg-gradient-to-br from-purple-500/10 to-purple-600/10 rounded-lg p-4 border border-purple-500/20">
-                      <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">{p.photos.length}</div>
+                      <div className="text-2xl font-bold text-secondary">{p.photos.length}</div>
                       <div className="text-xs text-muted-foreground mt-1">Images Available</div>
                     </div>
 
                     <div className="bg-gradient-to-br from-green-500/10 to-green-600/10 rounded-lg p-4 border border-green-500/20">
-                      <div className="text-2xl font-bold text-green-600 dark:text-green-400">{p.tags?.length || 0}</div>
+                      <div className="text-2xl font-bold text-primary">{p.tags?.length || 0}</div>
                       <div className="text-xs text-muted-foreground mt-1">Key Features</div>
                     </div>
 
                     <div className="bg-gradient-to-br from-orange-500/10 to-orange-600/10 rounded-lg p-4 border border-orange-500/20">
-                      <div className="text-2xl font-bold text-orange-600 dark:text-orange-400">{p.bio?.length || 0}</div>
+                      <div className="text-2xl font-bold text-chart-4">{p.bio?.length || 0}</div>
                       <div className="text-xs text-muted-foreground mt-1">Bio Characters</div>
                     </div>
                   </div>
